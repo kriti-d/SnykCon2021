@@ -75,7 +75,7 @@ jobs:
         command: monitor
 ```
 
-### Infrastructure as Code Results
+### Code Scanning IaC Results
 This workflow tests your infrastructure as code files for misconfigurations and populates them in the Secuirty Tab of github. It requires the path to the configuration file that you would like to test. For example `deployment.yaml` for a Kubernetes deployment manifest or `main.tf` for a Terraform configuration file
 
 ```name: Snyk Infrastructure as Code Check
