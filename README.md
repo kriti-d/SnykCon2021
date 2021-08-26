@@ -47,7 +47,7 @@ jobs:
         continue-on-error: true
         run: snyk code test --sarif > snyk_sarif
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN}}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Upload results to Github Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
@@ -79,8 +79,6 @@ jobs:
 This workflow tests your infrastructure as code files for misconfigurations and populates them in the Secuirty Tab of github. It requires the path to the configuration file that you would like to test. For example `deployment.yaml` for a Kubernetes deployment manifest or `main.tf` for a Terraform configuration file
 
 ```name: Snyk Infrastructure as Code Check
-on: 
-  push:
 jobs:
   snyk:
     runs-on: ubuntu-latest
