@@ -1,10 +1,12 @@
 # SnykCon2021
 Using Snyk Effectively  on Github
 
-## Github Action Scripts Used
+## Using Snyk Actions
+
 
 This describes the use cases and the scripts used in the SnykCon talk. All of these workflow use [Snyk Actions](https://github.com/snyk/actions) to execute the desired use cases.
 
+In order to use the Snyk Action, you will need to have a Snyk API toke. You can sign up for a [free account](www.snyk.io/login) and save your [API token](https://github.com/snyk/actions#getting-your-snyk-token) as a secret in your Github repository.
 
 ### Open Source Delta Check
 This workflow lets you block pipelines only if new vulnerabilities are introduced. It uses the [Snyk Delta](https://github.com/kriti-d/snyk-delta-check) tool to do the comparison with an already existing monitored projects to show results.
@@ -54,7 +56,7 @@ jobs:
 
 
 ### Container Monitor Results
-This Github Action lets you inspect your image for vulnerabilities, and creates a project on your Snyk Account with the available base image remediation recommendations.
+This workflow lets you inspect your image for vulnerabilities, and creates a project on your Snyk Account with the available base image remediation recommendations.
 
 ```bash
 jobs:
@@ -71,4 +73,29 @@ jobs:
       with:
         image: my-vuln-image:latest
         command: monitor
+```
+
+### Infrastructure as Code Results
+This workflow tests your infrastructure as code files for misconfigurations and populates them in the Secuirty Tab of github. It requires the path to the configuration file that you would like to test. For example `deployment.yaml` for a Kubernetes deployment manifest or `main.tf` for a Terraform configuration file
+
+```name: Snyk Infrastructure as Code Check
+on: 
+  push:
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Snyk to check configuration files for security issues
+        continue-on-error: true
+        uses: snyk/actions/iac@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          file: deployment.yaml
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
+          name: Infrastructure as Code Snyk Results
 ```
